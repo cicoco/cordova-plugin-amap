@@ -33,12 +33,10 @@
     [self.locationManager requestLocationWithReGeocode:YES completionBlock:^(CLLocation *location, AMapLocationReGeocode *regeocode, NSError *error) {
         
         if (error) {
-            NSLog(@"locError:{%ld - %@};", (long)error.code, error.localizedDescription);
-            NSDictionary *addressInfo = @{@"code": [NSNumber numberWithInteger:error.code],
-                                          @"message": error.localizedDescription};
-            
-            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:addressInfo];
+            NSLog(@"locError:{%zd - %@};", error.code, error.localizedDescription);
+            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[[NSString alloc] initWithFormat:@"[%zd]%@", error.code , error.localizedDescription]];
             [weakSelf.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+            return;
         } else {
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];

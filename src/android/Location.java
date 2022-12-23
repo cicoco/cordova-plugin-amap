@@ -1,7 +1,13 @@
 package unic.cicoco.cordova.amap;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.Manifest;
+import android.content.pm.PackageManager;
+
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationClientOption.AMapLocationMode;
+import com.amap.api.location.AMapLocationListener;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -12,21 +18,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationClientOption.AMapLocationMode;
-import com.amap.api.location.AMapLocationListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.util.Log;
+public class Location extends CordovaPlugin implements AMapLocationListener {
 
-public class Location extends CordovaPlugin implements AMapLocationListener{
-    
     private static final String TAG = "GeolocationPlugin";
-    private static final String [] permissions = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION };
-    
+    private static final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+
     private AMapLocationClient locationClient = null;
     private AMapLocationClientOption locationOption = null;
     private boolean keepSendBack = false;
@@ -34,9 +33,15 @@ public class Location extends CordovaPlugin implements AMapLocationListener{
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        callback = callbackContext;
+
         if (action.equals("getCurrentPosition")) {
-            locationClient = new AMapLocationClient(this.cordova.getActivity().getApplicationContext());
+            try {
+                locationClient = new AMapLocationClient(this.cordova.getActivity().getApplicationContext());
+            } catch (Exception e) {
+                callbackContext.error("init locationClient failed.");
+                return true;
+            }
+            callback = callbackContext;
             locationOption = new AMapLocationClientOption();
             // 设置定位模式为高精度模式
             locationOption.setLocationMode(AMapLocationMode.Hight_Accuracy);
@@ -85,7 +90,7 @@ public class Location extends CordovaPlugin implements AMapLocationListener{
                     locationInfo.put("poiName", aMapLocation.getPoiName());
                     locationInfo.put("aoiName", aMapLocation.getAoiName());
                 } catch (JSONException e) {
-                    Log.e(TAG, "Locatioin json error:" + e);
+                    LOG.e(TAG, "Assemble Location json error:" + e);
                 }
                 PluginResult result = new PluginResult(PluginResult.Status.OK, locationInfo);
                 if (!keepSendBack) { //不持续传回定位信息
@@ -95,29 +100,18 @@ public class Location extends CordovaPlugin implements AMapLocationListener{
                 }
                 callback.sendPluginResult(result);
             } else {
-                //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                Log.e(TAG, "Locatioin error:" + aMapLocation.getErrorCode());
-
-                JSONObject errorInof = new JSONObject();
-                try {
-                    errorInof.put("errorCode", aMapLocation.getErrorCode());
-                    errorInof.put("errorInfo", aMapLocation.getErrorInfo());
-                } catch (JSONException e) {
-                    Log.e(TAG, "errorInfo json error:" + e);
-                }
-                PluginResult result = new PluginResult(PluginResult.Status.ERROR, errorInof);
-                callback.sendPluginResult(result);
+                LOG.e(TAG, "Get Location error:" + aMapLocation.getErrorCode());
+                callback.error(String.format("[%d]%s", aMapLocation.getErrorCode(), aMapLocation.getErrorInfo()));
             }
         }
     }
-    
 
-    public void onRequestPermissionResult(int requestCode, String[] permissions,
-                                          int[] grantResults) throws JSONException
-    {
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
         PluginResult result;
         //This is important if we're using Cordova without using Cordova, but we have the geolocation plugin installed
-        if(callback != null) {
+        if (callback != null) {
             for (int r : grantResults) {
                 if (r == PackageManager.PERMISSION_DENIED) {
                     LOG.d(TAG, "Permission Denied!");
@@ -132,11 +126,10 @@ public class Location extends CordovaPlugin implements AMapLocationListener{
         }
     }
 
+    @Override
     public boolean hasPermisssion() {
-        for(String p : permissions)
-        {
-            if(!PermissionHelper.hasPermission(this, p))
-            {
+        for (String p : permissions) {
+            if (!PermissionHelper.hasPermission(this, p)) {
                 return false;
             }
         }
@@ -147,9 +140,8 @@ public class Location extends CordovaPlugin implements AMapLocationListener{
      * We override this so that we can access the permissions variable, which no longer exists in
      * the parent class, since we can't initialize it reliably in the constructor!
      */
-
-    public void requestPermissions(int requestCode)
-    {
+    @Override
+    public void requestPermissions(int requestCode) {
         PermissionHelper.requestPermissions(this, requestCode, permissions);
     }
 }
