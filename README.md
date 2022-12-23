@@ -19,7 +19,6 @@ config.xml，添加配置
 - 获取当前定位
 `window.plugins.aMapLocationPlugin.getCurrentPosition(success, fail);`
 
-
 ### success callback params properties
 	#### locationType  获取当前定位结果来源，如网络定位结果，详见定位类型表，仅支持Android
 	#### latitude  获取纬度
