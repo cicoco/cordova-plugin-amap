@@ -1,0 +1,7 @@
+repositories{
+    jcenter()
+}
+
+dependencies {
+    compile 'com.amap.api:location:6.2.0'
+}
