@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-uamap",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "amap plugin",
   "cordova": {
     "id": "cordova-plugin-uamap",
