@@ -54,6 +54,9 @@ public class Location extends CordovaPlugin implements AMapLocationListener {
             return;
         }
 
+        AMapLocationClient.updatePrivacyAgree(this.cordova.getActivity().getApplicationContext(), true);
+        AMapLocationClient.updatePrivacyShow(this.cordova.getActivity().getApplicationContext(), true, true);
+
         try {
             locationClient = new AMapLocationClient(this.cordova.getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -121,9 +124,8 @@ public class Location extends CordovaPlugin implements AMapLocationListener {
         }
     }
 
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
+    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
         for (int r : grantResults) {
             if (r == PackageManager.PERMISSION_DENIED) {
                 this.callback.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, PERMISSION_DENIED_ERROR));
@@ -136,6 +138,11 @@ public class Location extends CordovaPlugin implements AMapLocationListener {
                 break;
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
+        onRequestPermissionResult(requestCode, permissions, grantResults);
     }
 
     @Override
