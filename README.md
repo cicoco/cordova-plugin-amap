@@ -22,24 +22,24 @@
 `cordova.plugins.AMapLocation.getCurrentPosition(success, fail);`
 
 ### success callback params properties
-	#### locationType  获取当前定位结果来源，如网络定位结果，详见定位类型表，仅支持Android
-	#### latitude  获取纬度
-	#### longitude  获取经度
-	#### accuracy  获取精度信息
-	#### speed  获取速度信息
-	#### bearing  获取方向信息
-	#### date  定位时间
-	#### address  地址详情
-	#### country  国家信息
-	#### province  省信息
-	#### city  城市信息
-	#### district  城区信息
-	#### street  街道信息
-	#### streetNum  街道门牌号
-	#### cityCode  城市编码
-	#### adCode  地区编码
-	#### poiName POI名称
-	#### aoiName AOI名称
+	locationType  获取当前定位结果来源，如网络定位结果，详见定位类型表，仅支持Android
+	latitude  获取纬度
+	longitude  获取经度
+	accuracy  获取精度信息
+	speed  获取速度信息
+	bearing  获取方向信息
+	date  定位时间
+	address  地址详情
+	country  国家信息
+	province  省信息
+	city  城市信息
+	district  城区信息
+	street  街道信息
+	streetNum  街道门牌号
+	cityCode  城市编码
+	adCode  地区编码
+	poiName POI名称
+	aoiName AOI名称
 
 ### example
 	cordova.plugins.AMapLocation.getCurrentPosition(function(response){
