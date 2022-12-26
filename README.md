@@ -42,7 +42,7 @@
 	#### aoiName AOI名称
 
 ### example
-	window.plugins.aMapLocationPlugin.getCurrentPosition(function(response){
+	cordova.plugins.AMapLocation.getCurrentPosition(function(response){
 			console.log(response.locationType);
 			console.log(response.latitude);
 			console.log(response.longitude);
