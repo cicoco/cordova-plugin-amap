@@ -31,34 +31,49 @@ public class Location extends CordovaPlugin implements AMapLocationListener {
     private boolean keepSendBack = false;
     private CallbackContext callback;
 
+    public static final int GPS_REQUEST_CODE = 100001;
+
+    public static final int PERMISSION_DENIED_ERROR = 20;
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        if (action.equals("getCurrentPosition")) {
-            try {
-                locationClient = new AMapLocationClient(this.cordova.getActivity().getApplicationContext());
-            } catch (Exception e) {
-                callbackContext.error("init locationClient failed.");
-                return true;
-            }
+        if (action.equals("getCurrentLocation")) {
             callback = callbackContext;
-            locationOption = new AMapLocationClientOption();
-            // 设置定位模式为高精度模式
-            locationOption.setLocationMode(AMapLocationMode.Hight_Accuracy);
-            //设置为单次定位
-            locationOption.setOnceLocation(true);
-            // 设置定位监听
-            locationClient.setLocationListener(this);
-            locationOption.setNeedAddress(true);
-            locationOption.setInterval(2000);
-
-            locationClient.setLocationOption(locationOption);
-            // 启动定位
-            locationClient.startLocation();
+            getCurrentLocation();
             return true;
         } else {
             return false;
         }
+    }
+
+    private void getCurrentLocation() {
+        boolean hasGpsLocationPermission = hasPermisssion();
+        if (!hasGpsLocationPermission) {
+            requestPermissions(GPS_REQUEST_CODE);
+            return;
+        }
+
+        try {
+            locationClient = new AMapLocationClient(this.cordova.getActivity().getApplicationContext());
+        } catch (Exception e) {
+            callback.error("init locationClient failed.");
+            return;
+        }
+
+        locationOption = new AMapLocationClientOption();
+        // 设置定位模式为高精度模式
+        locationOption.setLocationMode(AMapLocationMode.Hight_Accuracy);
+        //设置为单次定位
+        locationOption.setOnceLocation(true);
+        // 设置定位监听
+        locationClient.setLocationListener(this);
+        locationOption.setNeedAddress(true);
+        locationOption.setInterval(2000);
+
+        locationClient.setLocationOption(locationOption);
+        // 启动定位
+        locationClient.startLocation();
     }
 
     @Override
@@ -109,20 +124,17 @@ public class Location extends CordovaPlugin implements AMapLocationListener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
-        PluginResult result;
-        //This is important if we're using Cordova without using Cordova, but we have the geolocation plugin installed
-        if (callback != null) {
-            for (int r : grantResults) {
-                if (r == PackageManager.PERMISSION_DENIED) {
-                    LOG.d(TAG, "Permission Denied!");
-                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
-                    callback.sendPluginResult(result);
-                    return;
-                }
-
+        for (int r : grantResults) {
+            if (r == PackageManager.PERMISSION_DENIED) {
+                this.callback.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, PERMISSION_DENIED_ERROR));
+                return;
             }
-            result = new PluginResult(PluginResult.Status.OK);
-            callback.sendPluginResult(result);
+        }
+        switch (requestCode) {
+            case GPS_REQUEST_CODE: {
+                getCurrentLocation();
+                break;
+            }
         }
     }
 

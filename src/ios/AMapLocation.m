@@ -20,7 +20,7 @@
     }
 }
 
-- (void)getCurrentPosition:(CDVInvokedUrlCommand*)command
+- (void)getCurrentLocation:(CDVInvokedUrlCommand*)command
 {
     [self initConfig];
     

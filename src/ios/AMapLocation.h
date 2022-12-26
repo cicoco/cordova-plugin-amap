@@ -10,6 +10,6 @@
 
 - (void) initConfig;
 
-- (void)getCurrentPosition:(CDVInvokedUrlCommand*)command;
+- (void)getCurrentLocation:(CDVInvokedUrlCommand*)command;
 
 @end
