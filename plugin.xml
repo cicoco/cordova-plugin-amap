@@ -22,7 +22,7 @@
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-plugin-uamap"
-    version="1.0.1">
+    version="1.0.2">
     <name>cordova-plugin-uamap</name>
     <description>Cordova Location Plugin By AMap</description>
     <license>Apache 2.0</license>
@@ -35,12 +35,17 @@
         <engine name="cordova" version=">=3.0.0"/>
     </engines>
 
-    <js-module src="www/location.js" name="AMapLocation">
-        <clobbers target="window.plugins.aMapLocationPlugin" />
+    <js-module name="AMapLocation" src="www/location.js">
+        <clobbers target="cordova.plugins.AMapLocation" />
     </js-module>
 
     <!-- android -->
     <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="AMapLocation">
+                <param name="android-package" value="unic.cicoco.cordova.amap.Location" />
+            </feature>
+        </config-file>
        <config-file target="AndroidManifest.xml" parent="/*">
         <!--用于进行网络定位-->
         <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -68,18 +73,6 @@
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <service android:name="com.amap.api.location.APSService"></service>   
             <meta-data android:name="com.amap.api.v2.apikey" android:value="$AMAP_ANDROID_KEY"></meta-data> 
-        </config-file>
-        <!--适配cordova-andorid 7.0的安装，如果含jar包，则需要这种格式-->
-        <config-file target="app/src/main/res/xml/config.xml" parent="/*">
-            <feature name="AMapLocation" >
-                <param name="android-package" value="com.phonegap.plugins.aMapLocation.Location"/>
-            </feature>
-        </config-file>
-        <!--适配cordova-android 6.4的安装，如果不含jar包，则兼容cordova-android 7.0和6.4，不含jar包的plugin，包括已经很多已经不更新的plugin是这种格式-->
-        <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="AMapLocation" >
-                <param name="android-package" value="com.phonegap.plugins.aMapLocation.Location"/>
-            </feature>
         </config-file>
         <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
         <source-file src="src/android/Location.java" target-dir="src/unic/cicoco/cordova/amap" />

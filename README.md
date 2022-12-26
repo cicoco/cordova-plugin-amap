@@ -4,7 +4,8 @@
 
     cordova plugin add cordova-plugin-uamap --variable AMAP_ANDROID_KEY=高德网站申请android证书 --variable AMAP_IOS_KEY=高德网站申请IOS证书
 
-config.xml，添加配置    
+并在config.xml添加配置    
+```
 <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
     <string>用于打卡时签到定位</string>
 </edit-config>
@@ -14,10 +15,11 @@ config.xml，添加配置
 <edit-config target="NSLocationAlwaysUsageDescription" file="*-Info.plist" mode="merge">
     <string>用于打卡时签到定位</string>
 </edit-config>
+```
 
 ## 使用
 - 获取当前定位
-`window.plugins.aMapLocationPlugin.getCurrentPosition(success, fail);`
+`cordova.plugins.AMapLocation.getCurrentPosition(success, fail);`
 
 ### success callback params properties
 	#### locationType  获取当前定位结果来源，如网络定位结果，详见定位类型表，仅支持Android
