@@ -1,0 +1,5 @@
+src/ios/lib/MAMapKit.framework/Headers filter=lfs diff=lfs merge=lfs -text
+src/ios/lib/MAMapKit.framework/MAMapKit filter=lfs diff=lfs merge=lfs -text
+src/ios/lib/MAMapKit.framework/Modules filter=lfs diff=lfs merge=lfs -text
+src/ios/lib/MAMapKit.framework/version.txt filter=lfs diff=lfs merge=lfs -text
+src/ios/lib/MAMapKit.framework/AMap.bundle filter=lfs diff=lfs merge=lfs -text
