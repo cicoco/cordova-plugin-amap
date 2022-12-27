@@ -1,12 +1,15 @@
 #import "AMapLocation.h"
 #import <AMapFoundationKit/AMapFoundationKit.h>
 #import <AMapLocationKit/AMapLocationKit.h>
+#import <MAMapKit/MAMapKit.h>
 
 @implementation AMapLocation
 
 //init Config
 -(void) initConfig{
     if(!self.locationManager){
+        [MAMapView updatePrivacyShow:AMapPrivacyShowStatusDidShow privacyInfo:AMapPrivacyInfoStatusDidContain];
+        [MAMapView updatePrivacyAgree:AMapPrivacyAgreeStatusDidAgree];
         //set APIKey
         NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
         NSString* appKey = [infoDict objectForKey:@"AMapAppKey"];
@@ -18,6 +21,11 @@
         //set DesiredAccuracy
         [self.locationManager setDesiredAccuracy:kCLLocationAccuracyHundredMeters];
     }
+}
+
+- (void)amapLocationManager:(AMapLocationManager *)manager doRequireLocationAuth:(CLLocationManager*)locationManager
+{
+    [locationManager requestAlwaysAuthorization];
 }
 
 - (void)getCurrentLocation:(CDVInvokedUrlCommand*)command
