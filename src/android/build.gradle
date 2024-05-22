@@ -3,5 +3,5 @@ repositories{
 }
 
 dependencies {
-    compile 'com.amap.api:location:6.2.0'
+    implementation 'com.amap.api:location:6.2.0'
 }
